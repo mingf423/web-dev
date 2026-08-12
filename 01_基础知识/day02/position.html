@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>定位演示 —— Day02</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code-label {
+            font-family: monospace;
+            font-size: 12px;
+            color: #1b65b9;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: #dee9f5;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #909399;
+            margin-top: 8px;
+        }
+
+        /* ====== Relative 演示 ====== */
+        .relative-box {
+            position: relative;
+            width: 200px;
+            height: 60px;
+            background: #dee9f5;
+            border: 2px solid #1b65b9;
+            margin: 40px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1b65b9;
+            border-radius: 3px;
+        }
+        .relative-box.moved {
+            /* 相对自己原位置：向下 20px，向右 30px */
+            top: 20px;
+            left: 30px;
+            background: #fef3d8;
+            border-color: #e6a23c;
+            color: #b06a10;
+        }
+        .ghost {
+            width: 200px;
+            height: 60px;
+            margin: 0 auto;
+            border: 2px dashed #dcdfe6;
+            background: #fafafa;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #909399;
+        }
+
+        /* ====== Absolute 演示 ====== */
+        .absolute-parent {
+            position: relative;
+            width: 350px;
+            height: 150px;
+            background: #f5f7fa;
+            border: 1px dashed #dcdfe6;
+            border-radius: 3px;
+            padding: 10px;
+            margin: 0 auto;
+        }
+        .absolute-child {
+            position: absolute;
+            padding: 6px 12px;
+            font-size: 12px;
+            background: #1b65b9;
+            color: #fff;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+        .tl { top: 0; left: 0; }          /* 左上角 */
+        .tr { top: 0; right: 0; }         /* 右上角 */
+        .br { bottom: 0; right: 0; }      /* 右下角 */
+        .bl { bottom: 0; left: 0; }       /* 左下角 */
+        .center-abs {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .badge-dot {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: #f56c6c;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .badge-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            min-width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            background: #f56c6c;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 0 6px;
+        }
+
+        /* ====== Fixed 演示 ====== */
+        .fixed-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1b65b9;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 13px;
+            z-index: 999;
+        }
+
+        /* ====== Sticky 演示（模拟长页面） ====== */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: #1b65b9;
+            color: #fff;
+            padding: 12px 16px;
+            font-weight: 700;
+            z-index: 10;
+        }
+        .scroll-box {
+            height: 200px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            border-radius: 3px;
+        }
+        .scroll-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、position: relative（相对定位）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            元素<strong>仍占据原位置</strong>，但可以相对于自己的原位置偏移 top/left/right/bottom。
+        </p>
+
+        <!-- 原位置幽灵（占位标记） -->
+        <div class="ghost">← 这是 relative 元素原本的位置（已被偏移）</div>
+
+        <!-- 实际元素 -->
+        <div class="relative-box moved">
+            position: relative; top: 20px; left: 30px
+        </div>
+
+        <p class="note">
+            👆 元素视觉上移动了，但它<strong>原始位置的空间仍然保留</strong>（上面的虚线框）。
+            relative 最大的用途不是偏移自己，而是<strong>给 absolute 子元素做锚点</strong>。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>二、position: absolute + relative 父元素 ⭐ 最重要</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            absolute 元素脱离正常流，相对于<strong>最近的定位祖先</strong>（非 static）定位。
+            最常见组合：父 relative + 子 absolute。
+        </p>
+
+        <span class="code-label">absolute 子元素放在父元素四角</span>
+        <div class="absolute-parent">
+            <span style="font-size:12px;color:#909399;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">父容器（relative）</span>
+            <div class="absolute-child tl">左上</div>
+            <div class="absolute-child tr">右上</div>
+            <div class="absolute-child bl">左下</div>
+            <div class="absolute-child br">右下</div>
+            <div class="absolute-child center-abs">正中</div>
+        </div>
+
+        <h3 style="margin-top:24px;">实战1：角标（红点/未读数）</h3>
+        <div style="display:flex;gap:40px;justify-content:center;margin-top:12px;">
+            <!-- 红点角标 -->
+            <div style="position:relative;display:inline-block;padding:10px 20px;background:#f5f7fa;border:1px solid #dcdfe6;border-radius:4px;font-size:14px;">
+                📨 消息
+                <span class="badge-dot"></span>
+            </div>
+            <!-- 数字角标 -->
+            <div style="position:relative;display:inline-block;padding:10px 20px;background:#f5f7fa;border:1px solid #dcdfe6;border-radius:4px;font-size:14px;">
+                🛒 购物车
+                <span class="badge-number">12</span>
+            </div>
+        </div>
+
+        <p class="note">
+            👆 项目中 <code>&lt;el-badge&gt;</code> 组件内部就是这个原理：父 relative + 角标 absolute。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>三、position: fixed（固定定位）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            相对于<strong>浏览器窗口</strong>固定，滚动页面也不动。常用于顶部导航栏、底部操作栏。
+        </p>
+
+        <p class="note">
+            👇 页面底部有一条蓝色固定条（就是这个 fixed 元素），滚动页面它始终在底部。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>四、position: sticky（粘性定位）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            <strong>滚动前</strong>正常排列，<strong>滚动超过阈值后</strong>固定不动。常用于表头固定。
+        </p>
+
+        <span class="code-label">滚动下面的区域，观察"表头"是否粘在顶部</span>
+        <div class="scroll-box">
+            <div class="sticky-header">
+                📋 表格标题行（sticky: top: 0）—— 滚动试试
+            </div>
+            <div class="scroll-item">数据行 1</div>
+            <div class="scroll-item">数据行 2</div>
+            <div class="scroll-item">数据行 3</div>
+            <div class="scroll-item">数据行 4</div>
+            <div class="scroll-item">数据行 5</div>
+            <div class="scroll-item">数据行 6</div>
+            <div class="scroll-item">数据行 7</div>
+            <div class="scroll-item">数据行 8</div>
+            <div class="scroll-item">数据行 9</div>
+            <div class="scroll-item">数据行 10</div>
+            <div class="scroll-item">数据行 11</div>
+            <div class="scroll-item">数据行 12</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>五种 position 速查</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;">
+            <thead>
+                <tr style="background:#f0f2f5;">
+                    <th style="padding:8px 12px;border:1px solid #dcdfe6;text-align:left;">值</th>
+                    <th style="padding:8px 12px;border:1px solid #dcdfe6;text-align:left;">参照物</th>
+                    <th style="padding:8px 12px;border:1px solid #dcdfe6;text-align:left;">是否脱离文档流</th>
+                    <th style="padding:8px 12px;border:1px solid #dcdfe6;text-align:left;">典型场景</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;"><code>static</code></td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">正常流</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">否</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">默认值，99% 的元素</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;"><code>relative</code></td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">自己原位置</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">否（保留占位）</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">给 absolute 子元素做锚点</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;"><code>absolute</code></td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">最近的定位祖先</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">是（不占空间）</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">角标、下拉菜单、弹窗</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;"><code>fixed</code></td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">浏览器视口</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">是</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">固定导航、底部操作栏</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;"><code>sticky</code></td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">滚动容器</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">否（滚动到阈值前）</td>
+                    <td style="padding:8px 12px;border:1px solid #dcdfe6;">表头跟随、侧边栏</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 固定在页面底部的条 -->
+    <div class="fixed-banner">
+        🔒 我是 position: fixed 的底部条 —— 滚动页面我会一直在底部
+    </div>
+
+</body>
+</html>

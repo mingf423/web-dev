@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Flexbox 布局演示 —— Day02</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        h3 {
+            margin: 16px 0 10px;
+            font-size: 14px;
+            color: #606266;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        /* ====== 通用子元素样式 ====== */
+        .child {
+            padding: 12px 18px;
+            background: #dee9f5;
+            border: 2px solid #1b65b9;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1b65b9;
+            white-space: nowrap;
+        }
+
+        .child:nth-child(odd)  { background: #dee9f5; }
+        .child:nth-child(even) { background: #fef3d8; border-color: #e6a23c; color: #b06a10; }
+
+        .flex-container {
+            display: flex;
+            background: #f5f7fa;
+            border: 1px dashed #dcdfe6;
+            padding: 12px;
+            min-height: 80px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+
+        .code-label {
+            font-family: monospace;
+            font-size: 12px;
+            color: #1b65b9;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: #dee9f5;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #909399;
+            margin-top: 8px;
+        }
+
+        .highlight {
+            background: #fef3d8;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-weight: 700;
+            color: #b06a10;
+        }
+
+        /* ====== 居中演示 ====== */
+        .center-demo {
+            width: 300px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f7fa;
+            border: 1px dashed #dcdfe6;
+            margin: 0 auto;
+        }
+        .center-demo .child {
+            background: #67c23a;
+            border-color: #4caf50;
+            color: #fff;
+        }
+
+        /* ====== flex 比例演示 ====== */
+        .flex-1 { flex: 1; }
+        .flex-2 { flex: 2; }
+        .flex-3 { flex: 3; }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、justify-content（水平对齐）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            flex 容器默认主轴是<strong>水平方向</strong>，justify-content 控制子元素在主轴上的排列方式。
+        </p>
+
+        <span class="code-label">flex-start（默认，靠左）</span>
+        <div class="flex-container" style="justify-content: flex-start;">
+            <div class="child">盒子 1</div>
+            <div class="child">盒子 2</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">center（居中）</span>
+        <div class="flex-container" style="justify-content: center;">
+            <div class="child">盒子 1</div>
+            <div class="child">盒子 2</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">flex-end（靠右）</span>
+        <div class="flex-container" style="justify-content: flex-end;">
+            <div class="child">盒子 1</div>
+            <div class="child">盒子 2</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">space-between（两端对齐，间距平分）⭐ 最常用</span>
+        <div class="flex-container" style="justify-content: space-between;">
+            <div class="child">盒子 1</div>
+            <div class="child">盒子 2</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">space-around（每个元素周围间距相等）</span>
+        <div class="flex-container" style="justify-content: space-around;">
+            <div class="child">盒子 1</div>
+            <div class="child">盒子 2</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <p class="note">
+            👆 项目中 <span class="highlight">space-between</span> 最常见：header 左边放标题，右边放操作按钮。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>二、align-items（垂直对齐）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            align-items 控制子元素在交叉轴（默认垂直方向）上的对齐方式。注意容器需要足够的高度才能看出效果。
+        </p>
+
+        <span class="code-label">center（垂直居中）⭐ 最常用</span>
+        <div class="flex-container" style="align-items: center; height: 100px; justify-content: center;">
+            <div class="child">盒子 1</div>
+            <div class="child" style="padding:20px 18px;font-size:20px;">盒子 2（大）</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">flex-start（顶部对齐）</span>
+        <div class="flex-container" style="align-items: flex-start; height: 100px; justify-content: center;">
+            <div class="child">盒子 1</div>
+            <div class="child" style="padding:20px 18px;font-size:20px;">盒子 2（大）</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <span class="code-label">flex-end（底部对齐）</span>
+        <div class="flex-container" style="align-items: flex-end; height: 100px; justify-content: center;">
+            <div class="child">盒子 1</div>
+            <div class="child" style="padding:20px 18px;font-size:20px;">盒子 2（大）</div>
+            <div class="child">盒子 3</div>
+        </div>
+
+        <p class="note">
+            👆 注意三个盒子高度不同，但垂直对齐方式让它们统一排列。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>三、万能居中（justify-content + align-items）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            把这两个属性都设为 center，子元素在容器中完美居中。
+        </p>
+
+        <div class="center-demo">
+            <div class="child">我在正中间！</div>
+        </div>
+
+        <p class="note">
+            👆 不需要算 margin，不需要算 padding，两行 CSS 就搞定了。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>四、flex 比例分配（flex: N）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            flex: N 表示子元素按 N 的比例分配<strong>剩余空间</strong>。
+        </p>
+
+        <span class="code-label">flex: 1 | flex: 1 | flex: 1（三个等分）</span>
+        <div class="flex-container">
+            <div class="child flex-1">flex: 1</div>
+            <div class="child flex-1">flex: 1</div>
+            <div class="child flex-1">flex: 1</div>
+        </div>
+
+        <span class="code-label">flex: 1 | flex: 2 | flex: 3（1:2:3）</span>
+        <div class="flex-container">
+            <div class="child flex-1">flex: 1</div>
+            <div class="child flex-2">flex: 2</div>
+            <div class="child flex-3">flex: 3</div>
+        </div>
+
+        <span class="code-label">flex: 1 | 固定 200px | flex: 1（中间固定，两边弹性）</span>
+        <div class="flex-container">
+            <div class="child flex-1">flex: 1</div>
+            <div class="child" style="width:200px;flex:none;">width: 200px (不伸缩)</div>
+            <div class="child flex-1">flex: 1</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>五、常见实战布局</h2>
+
+        <h3>5.1 Header 布局：左标题 + 右按钮</h3>
+        <div class="flex-container" style="justify-content: space-between; align-items: center;">
+            <span style="font-size:16px;font-weight:700;">账单管理</span>
+            <span>
+                <button style="margin-right:8px;padding:6px 16px;">导出</button>
+                <button style="padding:6px 16px;background:#1b65b9;color:#fff;border:none;">新增</button>
+            </span>
+        </div>
+
+        <h3>5.2 搜索表单行</h3>
+        <div class="flex-container" style="gap:12px;align-items:center;flex-wrap:wrap;">
+            <input placeholder="姓名" style="padding:6px 10px;width:150px;" />
+            <input placeholder="状态" style="padding:6px 10px;width:150px;" />
+            <button style="padding:6px 16px;">重置</button>
+            <button style="padding:6px 16px;background:#1b65b9;color:#fff;border:none;">查询</button>
+        </div>
+
+        <h3>5.3 标签列表（flex-wrap: wrap 自动换行）</h3>
+        <div class="flex-container" style="gap:8px;flex-wrap:wrap;">
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Vue</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Element UI</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">ECharts</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Vuex</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Vue Router</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Less</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">axios</span>
+            <span style="background:#dee9f5;color:#1b65b9;padding:4px 12px;border-radius:2px;font-size:12px;">Webpack</span>
+        </div>
+    </div>
+
+</body>
+</html>

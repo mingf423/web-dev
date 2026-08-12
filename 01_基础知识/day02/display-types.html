@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>块级 vs 行内演示 —— Day02</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        /* ====== 通用演示用 ====== */
+        .demo-item {
+            padding: 10px 16px;
+            margin: 6px;
+            font-size: 13px;
+            text-align: center;
+            border-radius: 3px;
+        }
+
+        /* ====== 演示1：block ====== */
+        .block-demo .demo-item {
+            display: block;
+            width: 200px;
+            height: 44px;
+            background: #dee9f5;
+            border: 2px solid #1b65b9;
+            line-height: 20px;
+        }
+
+        /* ====== 演示2：inline ====== */
+        .inline-demo .demo-item {
+            display: inline;
+            width: 200px;       /* 无效！inline 元素宽高不生效 */
+            height: 44px;       /* 无效！inline 元素宽高不生效 */
+            background: #fef3d8;
+            border: 2px solid #e6a23c;
+        }
+
+        /* ====== 演示3：inline-block ====== */
+        .ib-demo .demo-item {
+            display: inline-block;
+            width: 120px;
+            height: 44px;
+            background: #e8f5e9;
+            border: 2px solid #67c23a;
+            line-height: 20px;
+        }
+
+        .code-ref {
+            font-family: monospace;
+            font-size: 12px;
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 2px;
+            color: #e6a23c;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #909399;
+            margin-top: 12px;
+        }
+
+        .bad { color: #f56c6c; font-size: 12px; }
+        .good { color: #67c23a; font-size: 12px; }
+
+        /* ====== 演示4：常见标签的默认 display ====== */
+        .tag-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        .tag-table th, .tag-table td {
+            border: 1px solid #dcdfe6;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .tag-table th {
+            background: #f0f2f5;
+            font-weight: 700;
+        }
+        .tag-table code {
+            font-family: monospace;
+            background: #f5f7fa;
+            padding: 1px 5px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、display: block（块级元素）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            独占一整行，可以设置 width / height。<code class="code-ref">&lt;div&gt;</code> <code class="code-ref">&lt;p&gt;</code> <code class="code-ref">&lt;h1&gt;</code> 默认就是 block。
+        </p>
+
+        <div class="block-demo">
+            <div class="demo-item">Block 1 — width: 200px</div>
+            <div class="demo-item">Block 2 — width: 200px</div>
+            <div class="demo-item">Block 3 — width: 200px</div>
+        </div>
+
+        <p class="note">👆 即使只有 200px 宽，每个仍独占一行，下一个会换到新行。</p>
+    </div>
+
+    <div class="section">
+        <h2>二、display: inline（行内元素）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            不换行，但 <strong>无法设置</strong> width / height。<code class="code-ref">&lt;span&gt;</code> <code class="code-ref">&lt;a&gt;</code> 默认就是 inline。
+        </p>
+
+        <div class="inline-demo" style="background:#fafafa;padding:10px;border:1px dashed #dcdfe6;">
+            <span class="demo-item">Inline-A</span>
+            <span class="demo-item">Inline-B</span>
+            <span class="demo-item">Inline-C</span>
+        </div>
+
+        <p class="bad">❌ 即使写了 width:200px; height:44px，对 inline 元素也不生效！尺寸由内容决定。</p>
+    </div>
+
+    <div class="section">
+        <h2>三、display: inline-block（行内块元素）</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            既能<strong>在同一行</strong>排列，又能设置 <strong>width / height</strong>。<code class="code-ref">&lt;button&gt;</code> <code class="code-ref">&lt;input&gt;</code> 默认就是 inline-block。
+        </p>
+
+        <div class="ib-demo" style="background:#fafafa;padding:10px;border:1px dashed #dcdfe6;">
+            <div class="demo-item">Btn-A</div>
+            <div class="demo-item">Btn-B</div>
+            <div class="demo-item">Btn-C</div>
+            <div class="demo-item">Btn-D</div>
+        </div>
+
+        <p class="good">✅ 不换行 + 有宽高 = inline-block。项目中 el-button 就是这样。</p>
+    </div>
+
+    <div class="section">
+        <h2>四、常见 HTML 标签的默认 display 值</h2>
+        <table class="tag-table">
+            <thead>
+                <tr>
+                    <th>标签</th>
+                    <th>默认 display</th>
+                    <th>能设宽高？</th>
+                    <th>换行？</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>&lt;div&gt;</code> <code>&lt;section&gt;</code> <code>&lt;header&gt;</code></td>
+                    <td>block</td>
+                    <td>✅ 能</td>
+                    <td>✅ 换行</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;p&gt;</code> <code>&lt;h1&gt;~&lt;h6&gt;</code> <code>&lt;ul&gt;</code></td>
+                    <td>block</td>
+                    <td>✅ 能</td>
+                    <td>✅ 换行</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;span&gt;</code> <code>&lt;a&gt;</code> <code>&lt;em&gt;</code></td>
+                    <td>inline</td>
+                    <td>❌ 不能</td>
+                    <td>❌ 不换行</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;button&gt;</code> <code>&lt;input&gt;</code> <code>&lt;select&gt;</code></td>
+                    <td>inline-block</td>
+                    <td>✅ 能</td>
+                    <td>❌ 不换行（但宽度不够会换）</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;img&gt;</code> <code>&lt;video&gt;</code></td>
+                    <td>inline（替换元素）</td>
+                    <td>✅ 能（特殊）</td>
+                    <td>❌ 不换行</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

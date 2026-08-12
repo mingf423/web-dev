@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>个人名片 —— Day02 综合练习</title>
+    <style>
+        /* ====== 基础重置 ====== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* ====== 整体布局：让卡片在页面正中 ====== */
+        body {
+            font-family: system-ui;
+            background: #f1f2f6;
+            min-height: 100vh;              /* 至少占满整个视口高度 */
+            display: flex;
+            justify-content: center;         /* 水平居中 */
+            align-items: center;             /* 垂直居中 */
+            /* 上面的 flex + center×2 = 卡片在页面正中间 */
+        }
+
+        /* ====== 卡片主体 ====== */
+        .card {
+            width: 420px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            display: flex;
+            gap: 24px;                       /* 左右两栏间距 */
+        }
+
+        /* ====== 左侧：头像 ====== */
+        .avatar {
+            flex-shrink: 0;                  /* 不被挤压 */
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;              /* 50% = 圆形 */
+            background: linear-gradient(135deg, #1b65b9, #3ca0f6);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* ====== 右侧：信息区 ====== */
+        .info {
+            flex: 1;                         /* 占满剩余空间 */
+            min-width: 0;                    /* 防止 flex 子元素溢出 */
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #303133;
+            margin-bottom: 4px;
+        }
+
+        .title {
+            font-size: 14px;
+            color: #606266;
+            margin-bottom: 4px;
+        }
+
+        .company {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 12px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        /* ====== 技能标签（Flexbox 排列，可换行） ====== */
+        .skills-label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 8px;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;                 /* 超出宽度自动换行 */
+            gap: 6px;                        /* 标签之间 6px 间距 */
+        }
+
+        .skill-tag {
+            padding: 4px 12px;
+            font-size: 12px;
+            color: #1b65b9;
+            background: #dee9f5;
+            border-radius: 2px;
+            white-space: nowrap;             /* 单个标签不换行 */
+        }
+
+        .skill-tag.highlight {
+            background: #1b65b9;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- 左侧：头像 -->
+        <div class="avatar">张</div>
+
+        <!-- 右侧：信息 -->
+        <div class="info">
+            <div class="name">张三</div>
+            <div class="title">高级前端开发工程师</div>
+            <div class="company">某医疗科技公司 · 研发中心</div>
+
+            <hr class="divider" />
+
+            <div class="skills-label">技术栈</div>
+            <div class="skills">
+                <span class="skill-tag highlight">Vue 2</span>
+                <span class="skill-tag">Element UI</span>
+                <span class="skill-tag">ECharts</span>
+                <span class="skill-tag">Vuex</span>
+                <span class="skill-tag">Vue Router</span>
+                <span class="skill-tag">Less</span>
+                <span class="skill-tag">axios</span>
+                <span class="skill-tag">Webpack</span>
+                <span class="skill-tag">Java</span>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ====== 练习任务 ======
+    1. 修改 name 和 title 为你自己的信息
+    2. 修改技能标签，换成你熟悉的 Java 技术栈
+    3. 尝试把卡片加宽到 500px
+    4. 尝试把头像改成正方形（把 border-radius: 50% 改成 4px）
+    5. 新增一个"联系方式"行（QQ / 邮箱），放在技能标签下方
+    6. 在卡片右上角加一个"在线"绿色圆点（提示：absolute + relative）
+    ======
+    -->
+
+</body>
+</html>

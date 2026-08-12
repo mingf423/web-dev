@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>盒模型演示 —— Day02</title>
+    <style>
+        /* ====== 基础重置 ====== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        h3 {
+            margin: 16px 0 10px;
+            font-size: 14px;
+            color: #606266;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        /* ====== 演示1：盒模型四层结构 ====== */
+        .demo-box {
+            width: 200px;
+            height: 100px;
+            padding: 20px;
+            border: 5px solid #1b65b9;
+            margin: 30px;
+            background: #dee9f5;
+            text-align: center;
+            line-height: 50px;
+            font-size: 13px;
+            color: #1b65b9;
+            font-weight: 700;
+        }
+
+        .layer-legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .layer-legend span {
+            padding: 4px 12px;
+            border-radius: 2px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .legend-margin   { background: #fde2c2; color: #b06a10; }
+        .legend-border   { background: #c2d9f7; color: #1b65b9; }
+        .legend-padding  { background: #c8e6c9; color: #2e7d32; }
+        .legend-content  { background: #e0e0e0; color: #555;    }
+
+        /* ====== 演示2：content-box vs border-box ====== */
+        .compare-row {
+            display: flex;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        .compare-item {
+            text-align: center;
+        }
+        .compare-item .label {
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #606266;
+        }
+        .compare-item .warn {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #f56c6c;
+        }
+        .compare-item .ok {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #67c23a;
+        }
+
+        .content-box {
+            width: 200px; height: 80px;
+            padding: 20px;
+            border: 5px solid #e6a23c;
+            background: #fef3d8;
+            /* 默认 box-sizing: content-box */
+        }
+
+        .border-box {
+            box-sizing: border-box;
+            width: 200px; height: 80px;
+            padding: 20px;
+            border: 5px solid #67c23a;
+            background: #e8f5e9;
+        }
+
+        .measure-line {
+            font-size: 11px;
+            color: #909399;
+            margin-top: 4px;
+        }
+
+        /* ====== 演示3：margin 的特殊行为 ====== */
+        .margin-demo {
+            display: flex;
+            gap: 20px;
+        }
+        .margin-parent {
+            background: #f5f7fa;
+            border: 1px dashed #dcdfe6;
+            padding: 10px;
+            min-height: 80px;
+        }
+        .margin-child {
+            background: #dee9f5;
+            border: 1px solid #1b65b9;
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+
+        /* margin 折叠演示 */
+        .collapse-demo .box-a {
+            background: #fef3d8;
+            margin-bottom: 30px;
+            padding: 10px;
+            font-size: 13px;
+            border: 1px solid #e6a23c;
+        }
+        .collapse-demo .box-b {
+            background: #e8f5e9;
+            margin-top: 30px;
+            padding: 10px;
+            font-size: 13px;
+            border: 1px solid #67c23a;
+        }
+        .collapse-note {
+            font-size: 12px;
+            color: #f56c6c;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、盒模型四层结构</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            每个元素都是一个矩形盒子，从外到内：margin → border → padding → content
+        </p>
+
+        <!-- 实际演示元素 -->
+        <div class="demo-box">
+            width: 200px
+        </div>
+
+        <div class="layer-legend">
+            <span class="legend-margin">■ margin（外边距）</span>
+            <span class="legend-border">■ border（边框）</span>
+            <span class="legend-padding">■ padding（内边距）</span>
+            <span class="legend-content">■ content（内容区）</span>
+        </div>
+
+        <p style="font-size:12px;color:#909399;margin-top:16px;">
+            👆 打开 F12 → Elements，鼠标悬停在蓝色盒子上，可以看到浏览器标注的四层区域。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>二、content-box vs border-box</h2>
+        <p style="font-size:13px;color:#909399;margin-bottom:16px;">
+            两者 CSS 声明完全一样（width:200px, padding:20px, border:5px），但实际占用宽度不同！
+        </p>
+
+        <div class="compare-row">
+            <div class="compare-item">
+                <div class="label">content-box（默认）</div>
+                <div class="content-box">内容区</div>
+                <div class="warn">⚠ 实际占宽 = 200 + 20×2 + 5×2 = 250px</div>
+                <div class="measure-line">width 只算内容区</div>
+            </div>
+            <div class="compare-item">
+                <div class="label">border-box（推荐）</div>
+                <div class="border-box">内容区</div>
+                <div class="ok">✅ 实际占宽 = 200px（含 padding+border）</div>
+                <div class="measure-line">width = 内容+padding+border</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>三、margin 的三个关键特性</h2>
+
+        <h3>3.1 margin: auto 实现水平居中</h3>
+        <div style="background:#f5f7fa;padding:10px;">
+            <div style="width:200px;margin:0 auto;background:#dee9f5;border:1px solid #1b65b9;padding:10px;text-align:center;font-size:13px;">
+                margin: 0 auto → 水平居中
+            </div>
+        </div>
+
+        <h3>3.2 上下 margin 会"折叠"（取最大值）</h3>
+        <div class="collapse-demo">
+            <div class="box-a">box-a: margin-bottom: 30px</div>
+            <div class="box-b">box-b: margin-top: 30px</div>
+        </div>
+        <p class="collapse-note">
+            ⚠ 两个盒子间距不是 30+30=60px，而是取最大值 = 30px。这就是 margin 折叠。
+        </p>
+    </div>
+
+</body>
+</html>
