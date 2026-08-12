@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Java 开发者的前端第一步</title>
+    <style>
+        body {
+            font-family: system-ui;
+            max-width: 500px;
+            margin: 100px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="greeting">等待你的名字...</h1>
+    
+    <p>
+	    <input id="nameInput" type="text" placeholder="请输入你的名字" />
+	</p>
+    <button id="greetBtn">打招呼</button>
+
+    <script>
+        // ---- 就像 Java 里的 main 方法，这里是入口 ----
+
+        // 1. 找到页面上的元素（相当于 CSS 选择器）
+        const greetBtn = document.getElementById('greetBtn');
+        const greeting = document.getElementById('greeting');
+        const nameInput = document.getElementById('nameInput');
+
+        // 2. 绑定事件（相当于注册一个事件监听器）
+        greetBtn.addEventListener('click', function() {
+            const name = nameInput.value;
+
+            // 3. 操作页面内容（相当于 setText）
+            if (name.trim()) {
+                greeting.textContent = `你好，${name}！`;
+            } else {
+                greeting.textContent = '请输入名字后再点我！';
+            }
+        });
+
+        // 这就是前端最原始的"交互"：找到元素 → 监听事件 → 修改内容
+    </script>
+</body>
+</html>
