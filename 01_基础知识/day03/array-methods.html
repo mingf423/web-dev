@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>数组方法演示 —— Day03</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }      /* 注释 */
+        .code .k { color: #c678dd; }      /* 关键字 */
+        .code .s { color: #98c379; }      /* 字符串 */
+        .code .f { color: #61afef; }      /* 函数/方法 */
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        /* 输出区 */
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #303133;
+            line-height: 1.8;
+            min-height: 20px;
+        }
+        .output .result-line { white-space: pre-wrap; }
+        .output .result-line::before {
+            content: '➜ ';
+            color: #1b65b9;
+            font-weight: 700;
+        }
+
+        .input-data {
+            background: #fef9f0;
+            border: 1px solid #f3d19e;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #b06a10;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>准备数据：一个用户数组</h2>
+        <p class="desc">项目里这就是接口返回的 <code>res.data.records</code>。</p>
+        <div class="input-data" id="inputData"></div>
+        <div class="tip">💡 打开浏览器 F12 → Console，也能看到每次操作的 console.log 输出。</div>
+    </div>
+
+    <div class="section">
+        <h2>一、.map() —— 转换每个元素（≈ stream().map()）</h2>
+        <p class="desc">把每个用户对象换成「姓名」，返回新数组，长度不变。</p>
+        <div class="code"><span class="c">// 提取所有用户名</span>
+<span class="k">const</span> names = users.<span class="f">map</span>(u => u.name);</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-map"></div>
+    </div>
+
+    <div class="section">
+        <h2>二、.filter() —— 过滤（≈ stream().filter()）</h2>
+        <p class="desc">只保留在职用户（status === 1），返回的新数组可能变短。</p>
+        <div class="code"><span class="c">// 只保留在职用户</span>
+<span class="k">const</span> active = users.<span class="f">filter</span>(u => u.status === 1);</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-filter"></div>
+    </div>
+
+    <div class="section">
+        <h2>三、.find() —— 查找单个元素（≈ findFirst()）</h2>
+        <p class="desc">找到第一个满足条件的元素，找不到返回 undefined。</p>
+        <div class="code"><span class="c">// 找到 id 为 3 的用户</span>
+<span class="k">const</span> user = users.<span class="f">find</span>(u => u.id === 3);
+<span class="c">// 找一个不存在的 id</span>
+<span class="k">const</span> none = users.<span class="f">find</span>(u => u.id === 999);</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-find"></div>
+    </div>
+
+    <div class="section">
+        <h2>四、.sort() —— 排序（≈ sorted()）</h2>
+        <p class="desc">按年龄从小到大排序。注意：sort 会原地改数组，所以先 <code>[...users]</code> 复制一份。</p>
+        <div class="code"><span class="c">// 按年龄升序（a.age - b.age）</span>
+<span class="k">const</span> byAge = [...users].<span class="f">sort</span>((a, b) => a.age - b.age);
+<span class="c">// 按年龄降序</span>
+<span class="k">const</span> byAgeDesc = [...users].<span class="f">sort</span>((a, b) => b.age - a.age);</div>
+        <div class="label">升序输出：</div>
+        <div class="output" id="out-sort"></div>
+    </div>
+
+    <div class="section">
+        <h2>五、.forEach() —— 纯遍历（≈ for 循环）</h2>
+        <p class="desc">不返回新数组，只是挨个执行一次。</p>
+        <div class="code">users.<span class="f">forEach</span>(u => {
+    console.<span class="f">log</span>(`<span class="s">${u.name}</span> 今年 <span class="s">${u.age}</span> 岁`);
+});</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-forEach"></div>
+    </div>
+
+    <div class="section">
+        <h2>六、⭐ 方法链：组合拳（项目里最常见）</h2>
+        <p class="desc">一句话完成「过滤在职用户 → 提取 id → 排序」，这就是 Java Stream 的链式写法。</p>
+        <div class="code"><span class="c">// 过滤在职 → 提取 id → 排序</span>
+<span class="k">const</span> ids = users
+    .<span class="f">filter</span>(u => u.status === 1)
+    .<span class="f">map</span>(u => u.id)
+    .<span class="f">sort</span>((a, b) => a - b);</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-chain"></div>
+        <div class="tip">💡 再对比一下 Java：<br>
+        <code>users.stream().filter(u -> u.getStatus()==1).map(User::getId).sorted().collect(toList())</code></div>
+    </div>
+
+    <div class="section">
+        <h2>七、.reduce() —— 累加/汇总（≈ stream().reduce()）</h2>
+        <p class="desc">把数组汇总成一个值，比如求年龄总和、平均值。</p>
+        <div class="code"><span class="c">// 求所有用户年龄总和（0 是初始值）</span>
+<span class="k">const</span> totalAge = users.<span class="f">reduce</span>((sum, u) => sum + u.age, 0);
+<span class="c">// 求平均年龄</span>
+<span class="k">const</span> avgAge = totalAge / users.length;</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-reduce"></div>
+    </div>
+
+<script>
+    // ===== 准备数据 =====
+    const users = [
+        { id: 1, name: '张三', age: 30, status: 1 },
+        { id: 2, name: '李四', age: 24, status: 1 },
+        { id: 3, name: '王五', age: 35, status: 0 },
+        { id: 4, name: '赵六', age: 28, status: 1 },
+    ];
+
+    // 打印原始数据
+    document.getElementById('inputData').textContent =
+        JSON.stringify(users, null, 2);
+
+    // 输出辅助函数：往指定容器里加一行，同时 console.log
+    function print(id, value) {
+        const box = document.getElementById(id);
+        const line = document.createElement('div');
+        line.className = 'result-line';
+        // 对象/数组转成可读 JSON，普通值直接显示
+        line.textContent = (typeof value === 'object' && value !== null)
+            ? JSON.stringify(value)
+            : String(value);
+        box.appendChild(line);
+        console.log(id + ':', value);
+    }
+
+    // 一、map
+    const names = users.map(u => u.name);
+    print('out-map', names);
+
+    // 二、filter
+    const active = users.filter(u => u.status === 1);
+    print('out-filter', active);
+
+    // 三、find
+    const user = users.find(u => u.id === 3);
+    const none = users.find(u => u.id === 999);
+    print('out-find', user);
+    print('out-find', 'find(id=999) 结果 → ' + none);   // undefined
+
+    // 四、sort
+    const byAge = [...users].sort((a, b) => a.age - b.age);
+    print('out-sort', byAge.map(u => u.name + '(' + u.age + ')'));
+
+    // 五、forEach
+    users.forEach(u => {
+        print('out-forEach', u.name + ' 今年 ' + u.age + ' 岁');
+    });
+
+    // 六、方法链
+    const ids = users.filter(u => u.status === 1).map(u => u.id).sort((a, b) => a - b);
+    print('out-chain', ids);
+
+    // 七、reduce
+    const totalAge = users.reduce((sum, u) => sum + u.age, 0);
+    print('out-reduce', '年龄总和 = ' + totalAge + '，平均 = ' + (totalAge / users.length).toFixed(1));
+</script>
+
+</body>
+</html>

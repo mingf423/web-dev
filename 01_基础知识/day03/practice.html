@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>综合练习：用户数据处理 —— Day03</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            margin: 20px 0 10px;
+            font-size: 16px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 12px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .input-data {
+            background: #fef9f0;
+            border: 1px solid #f3d19e;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #b06a10;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #303133;
+            line-height: 1.8;
+            min-height: 20px;
+        }
+        .output .result-line { white-space: pre-wrap; }
+        .output .result-line::before {
+            content: '➜ ';
+            color: #1b65b9;
+            font-weight: 700;
+        }
+
+        .task-box {
+            background: #dee9f5;
+            border-left: 4px solid #1b65b9;
+            padding: 12px 16px;
+            border-radius: 3px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .task-box b { color: #1b65b9; }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h1>Day03 综合练习：处理一份用户数据</h1>
+        <p class="desc">数据是项目里最常见的「用户列表」，假设它来自接口 <code>res.data.records</code>。</p>
+        <div class="input-data" id="inputData"></div>
+    </div>
+
+    <div class="section">
+        <h2>任务 1：筛选在职用户（filter）</h2>
+        <div class="task-box">
+            <b>需求：</b>status === 1 表示在职，status === 0 表示离职。请用 <code>filter</code> 找出所有在职用户。<br>
+            <b>提示：</b>参考代码已实现，你可以打开 F12 → Sources 打断点，观察每一步的中间结果。
+        </div>
+        <div class="output" id="out-task1"></div>
+    </div>
+
+    <div class="section">
+        <h2>任务 2：提取所有姓名（map）</h2>
+        <div class="task-box">
+            <b>需求：</b>从「在职用户」里提取出所有人的姓名，得到 <code>['张三', '李四', ...]</code>。<br>
+            <b>提示：</b>可以在任务 1 的结果上继续 <code>.map(u => u.name)</code>，体验方法链。
+        </div>
+        <div class="output" id="out-task2"></div>
+    </div>
+
+    <div class="section">
+        <h2>任务 3：按年龄排序（sort）</h2>
+        <div class="task-box">
+            <b>需求：</b>把所有用户按年龄从大到小排序。<br>
+            <b>提示：</b>注意先 <code>[...users]</code> 复制，避免 <code>sort</code> 改掉原数组。
+        </div>
+        <div class="output" id="out-task3"></div>
+    </div>
+
+    <div class="section">
+        <h2>任务 4：找出年龄最大的在职用户（组合拳）</h2>
+        <div class="task-box">
+            <b>需求：</b>组合 <code>filter</code> + <code>sort</code>，找出在职用户里年龄最大的那个。<br>
+            <b>提示：</b>先 filter 出在职的，再按年龄降序，取 <code>[0]</code>。
+        </div>
+        <div class="output" id="out-task4"></div>
+    </div>
+
+    <div class="section">
+        <h2>任务 5：解构 + 模板字符串打印（综合）</h2>
+        <div class="task-box">
+            <b>需求：</b>用 <code>forEach</code> + 解构 + 模板字符串，逐行打印「姓名 今年 年龄 岁，状态 在职/离职」。<br>
+            <b>提示：</b><code>forEach(({ name, age, status }) => { ... })</code>，注意参数就是解构。
+        </div>
+        <div class="output" id="out-task5"></div>
+    </div>
+
+    <div class="section">
+        <h2>✅ 附加挑战（可选）</h2>
+        <div class="task-box">
+            1. 用 <code>reduce</code> 计算在职用户的平均年龄<br>
+            2. 用 <code>find</code> 找出 id 为 3 的用户，并打印他的姓名（用 <code>?.name ?? '未找到'</code> 防止找不到）<br>
+            3. 把「按部门分组」用 <code>filter</code> 实现（给数据加上 dept 字段）
+        </div>
+        <div class="output" id="out-bonus"></div>
+    </div>
+
+<script>
+    // ===== 准备数据 =====
+    const users = [
+        { id: 1, name: '张三', age: 30, status: 1 },
+        { id: 2, name: '李四', age: 24, status: 1 },
+        { id: 3, name: '王五', age: 35, status: 0 },
+        { id: 4, name: '赵六', age: 28, status: 1 },
+        { id: 5, name: '钱七', age: 42, status: 1 },
+        { id: 6, name: '孙八', age: 22, status: 0 },
+    ];
+
+    document.getElementById('inputData').textContent = JSON.stringify(users, null, 2);
+
+    function print(id, value) {
+        const box = document.getElementById(id);
+        const line = document.createElement('div');
+        line.className = 'result-line';
+        line.textContent = (typeof value === 'object' && value !== null)
+            ? JSON.stringify(value)
+            : String(value);
+        box.appendChild(line);
+        console.log(id + ':', value);
+    }
+
+    // 任务 1：筛选在职用户
+    const active = users.filter(u => u.status === 1);
+    print('out-task1', active);
+
+    // 任务 2：提取姓名（方法链：filter + map）
+    const activeNames = users.filter(u => u.status === 1).map(u => u.name);
+    print('out-task2', activeNames);
+
+    // 任务 3：按年龄降序排序
+    const byAgeDesc = [...users].sort((a, b) => b.age - a.age);
+    print('out-task3', byAgeDesc.map(u => u.name + '(' + u.age + '岁)'));
+
+    // 任务 4：年龄最大的在职用户（filter + sort + [0]）
+    const oldestActive = users.filter(u => u.status === 1).sort((a, b) => b.age - a.age)[0];
+    print('out-task4', oldestActive.name + '，' + oldestActive.age + ' 岁');
+
+    // 任务 5：解构 + 模板字符串打印
+    users.forEach(({ name, age, status }) => {
+        const statusText = status === 1 ? '在职' : '离职';
+        print('out-task5', `${name} 今年 ${age} 岁，${statusText}`);
+    });
+
+    // 附加挑战
+    const activeTotalAge = active.reduce((sum, u) => sum + u.age, 0);
+    print('out-bonus', '在职用户平均年龄 = ' + (activeTotalAge / active.length).toFixed(1));
+
+    const user3 = users.find(u => u.id === 3);
+    print('out-bonus', 'id=3 的用户姓名 = ' + (user3?.name ?? '未找到'));
+
+    const user999 = users.find(u => u.id === 999);
+    print('out-bonus', 'id=999 的用户姓名 = ' + (user999?.name ?? '未找到'));
+</script>
+
+</body>
+</html>

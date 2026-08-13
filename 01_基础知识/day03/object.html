@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>对象 · 解构 · 展开 · 可选链 —— Day03</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #303133;
+            line-height: 1.8;
+            min-height: 20px;
+        }
+        .output .result-line { white-space: pre-wrap; }
+        .output .result-line::before {
+            content: '➜ ';
+            color: #1b65b9;
+            font-weight: 700;
+        }
+        .output .err {
+            color: #f56c6c;
+        }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、对象 {} —— JS 的万能容器</h2>
+        <p class="desc">不用建类，字段随便加，用点号访问。等价于 Java 的 <code>Map&lt;String, Object&gt;</code>。</p>
+        <div class="code"><span class="k">const</span> user = {
+    id: 1,
+    name: <span class="s">'张三'</span>,
+    age: 30,
+};
+user.email = <span class="s">'zhangsan@test.com'</span>;   <span class="c">// 不用声明，直接加字段</span></div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-obj"></div>
+    </div>
+
+    <div class="section">
+        <h2>二、解构赋值 —— 一行提取字段</h2>
+        <p class="desc">接口返回 <code>{ code, type, message, data }</code>，用解构一行拆包。</p>
+        <div class="code"><span class="c">// 接口响应对象</span>
+<span class="k">const</span> res = { code: 0, type: <span class="s">'success'</span>, message: <span class="s">'成功'</span>, data: { list: [1,2,3] } };
+
+<span class="c">// ❌ 老写法：一个个取</span>
+<span class="k">const</span> oldCode = res.code;
+
+<span class="c">// ✅ 解构写法：一行搞定</span>
+<span class="k">const</span> { code, data, message } = res;</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-destructure"></div>
+    </div>
+
+    <div class="section">
+        <h2>三、数组解构</h2>
+        <p class="desc">也能解构数组，按位置取值。</p>
+        <div class="code"><span class="k">const</span> arr = [<span class="s">'红'</span>, <span class="s">'绿'</span>, <span class="s">'蓝'</span>];
+<span class="k">const</span> [first, second] = arr;
+
+<span class="c">// 交换两个变量的值（不用临时变量）</span>
+<span class="k">let</span> a = 1, b = 2;
+[a, b] = [b, a];</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-arr-destructure"></div>
+    </div>
+
+    <div class="section">
+        <h2>四、展开运算符 ... —— 复制与合并</h2>
+        <p class="desc">项目里最常见的用法：复制对象并顺便改个字段。</p>
+        <div class="code"><span class="c">// 合并对象：复制 baseConfig，覆盖 port</span>
+<span class="k">const</span> baseConfig = { host: <span class="s">'localhost'</span>, port: 8080, timeout: 3000 };
+<span class="k">const</span> devConfig = { ...baseConfig, port: 9090 };
+
+<span class="c">// 合并数组</span>
+<span class="k">const</span> merged = [...[1,2], ...[3,4]];   <span class="c">// [1,2,3,4]</span>
+
+<span class="c">// 复制数组（不污染原数组）</span>
+<span class="k">const</span> copy = [...[5,6,7]];</div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-spread"></div>
+        <div class="tip">💡 项目里的 <code>this.queryParam = { ...this.queryParam, pageNo: 1 }</code> 就是「复制一份 queryParam，把 pageNo 改成 1」。</div>
+    </div>
+
+    <div class="section">
+        <h2>五、可选链 ?. —— 防空指针</h2>
+        <p class="desc">任何一环是 null/undefined 就短路返回 undefined，不报错。</p>
+        <div class="code"><span class="c">// 有公司信息的用户</span>
+<span class="k">const</span> u1 = { name: <span class="s">'张三'</span>, company: { address: { city: <span class="s">'杭州'</span> } } };
+<span class="c">// 没有公司信息的用户（company 是 undefined）</span>
+<span class="k">const</span> u2 = { name: <span class="s">'李四'</span> };
+
+<span class="c">// ❌ 直接访问会报错</span>
+<span class="c">// u2.company.address.city  →  Cannot read properties of undefined</span>
+
+<span class="c">// ✅ 用可选链，安全访问</span>
+<span class="k">const</span> city1 = u1?.company?.address?.city;   <span class="c">// '杭州'</span>
+<span class="k">const</span> city2 = u2?.company?.address?.city;   <span class="c">// undefined（不报错）</span></div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-optional"></div>
+    </div>
+
+    <div class="section">
+        <h2>六、空值合并 ?? —— 给个默认值</h2>
+        <p class="desc">左边是 null/undefined 时用右边，类似 <code>Optional.orElse()</code>。</p>
+        <div class="code"><span class="k">const</span> nickname1 = u1?.nickname ?? <span class="s">'未设置'</span>;   <span class="c">// '未设置'</span>
+<span class="k">const</span> city3 = u2?.company?.address?.city ?? <span class="s">'未知城市'</span>;   <span class="c">// '未知城市'</span></div>
+        <div class="label">输出：</div>
+        <div class="output" id="out-nullish"></div>
+    </div>
+
+<script>
+    function print(id, value) {
+        const box = document.getElementById(id);
+        const line = document.createElement('div');
+        line.className = 'result-line';
+        if (value !== null && typeof value === 'object') {
+            line.textContent = JSON.stringify(value);
+        } else {
+            line.textContent = String(value);
+        }
+        box.appendChild(line);
+        console.log(id + ':', value);
+    }
+
+    // 一、对象
+    const user = { id: 1, name: '张三', age: 30 };
+    user.email = 'zhangsan@test.com';   // 直接加字段
+    print('out-obj', user);
+    print('out-obj', 'user.name = ' + user.name + '，user["name"] = ' + user['name']);
+
+    // 二、解构
+    const res = { code: 0, type: 'success', message: '成功', data: { list: [1, 2, 3] } };
+    const { code, data, message } = res;
+    print('out-destructure', 'code=' + code + ', type=' + res.type + ', message=' + message);
+    print('out-destructure', 'data = ' + JSON.stringify(data));
+
+    // 三、数组解构
+    const arr = ['红', '绿', '蓝'];
+    const [first, second] = arr;
+    let a = 1, b = 2;
+    [a, b] = [b, a];
+    print('out-arr-destructure', 'first=' + first + ', second=' + second);
+    print('out-arr-destructure', '交换后 a=' + a + ', b=' + b);
+
+    // 四、展开
+    const baseConfig = { host: 'localhost', port: 8080, timeout: 3000 };
+    const devConfig = { ...baseConfig, port: 9090 };
+    const merged = [...[1, 2], ...[3, 4]];
+    print('out-spread', 'devConfig = ' + JSON.stringify(devConfig));
+    print('out-spread', 'merged = ' + JSON.stringify(merged));
+
+    // 五、可选链
+    const u1 = { name: '张三', company: { address: { city: '杭州' } } };
+    const u2 = { name: '李四' };
+    const city1 = u1?.company?.address?.city;
+    const city2 = u2?.company?.address?.city;
+    print('out-optional', 'u1 的城市 = ' + city1);
+    print('out-optional', 'u2 的城市 = ' + city2 + '（没有报错，返回 undefined）');
+
+    // 六、空值合并
+    const nickname1 = u1?.nickname ?? '未设置';
+    const city3 = u2?.company?.address?.city ?? '未知城市';
+    print('out-nullish', 'u1 昵称 = ' + nickname1);
+    print('out-nullish', 'u2 城市(带默认值) = ' + city3);
+</script>
+
+</body>
+</html>
