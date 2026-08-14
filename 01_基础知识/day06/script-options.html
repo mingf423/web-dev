@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>组件 script 区各选项详解 —— Day06</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+        .code .t { color: #e06c75; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #303133;
+            line-height: 2;
+            min-height: 20px;
+        }
+        .output b.hl { color: #1b65b9; }
+
+        .input-demo {
+            padding: 8px 10px;
+            border: 1px solid #cecece;
+            border-radius: 2px;
+            font-size: 14px;
+            width: 200px;
+            color: #303133;
+        }
+        .input-demo:focus { border-color: #1b65b9; outline: none; }
+
+        .btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 2px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #1b65b9;
+            color: #fff;
+            margin-right: 6px;
+        }
+        .btn:hover { background: #4581c6; }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+
+        <div class="section">
+            <h2>一、export default 整体结构（先有个印象）</h2>
+            <p class="desc">组件就是一个对象，每个属性是一项职责。下面 6 个 section 逐个演示。</p>
+            <div class="code"><span class="k">export default</span> {
+    name: <span class="s">"UserList"</span>,
+    data() { <span class="k">return</span> { ... }; },   <span class="c">// 状态</span>
+    methods: { ... },               <span class="c">// 方法</span>
+    computed: { ... },              <span class="c">// 计算属性</span>
+    watch: { ... },                 <span class="c">// 监听</span>
+    created() { ... },              <span class="c">// 生命周期</span>
+}</div>
+        </div>
+
+        <div class="section">
+            <h2>二、data() —— 本地状态</h2>
+            <p class="desc">变量定义在 <code>data()</code> 返回的对象里，模板里用 <code>{{ }}</code> 读。</p>
+            <div class="code"><span class="f">data</span>() {
+    <span class="k">return</span> {
+        userName: <span class="s">'张三'</span>,
+        age: 30,
+    };
+}</div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                姓名：<b class="hl">{{ userName }}</b>，年龄：<b class="hl">{{ age }}</b>
+            </div>
+            <div class="tip">💡 为什么 data 是函数？组件被复用时，每个实例要独立的数据。函数每次 return 一个新对象，互不干扰。</div>
+        </div>
+
+        <div class="section">
+            <h2>三、methods —— 方法</h2>
+            <p class="desc"><code>@click</code> 触发的方法定义在 <code>methods</code> 里，用 <code>this.xxx</code> 改数据。</p>
+            <div class="code"><span class="f">methods</span>: {
+    increment() {
+        <span class="k">this</span>.count++;     <span class="c">// this.count 访问 data</span>
+    },
+}</div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <button class="btn" @click="increment">点我 +1</button>
+                <span>count = <b class="hl">{{ count }}</b></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>四、computed —— 计算属性（派生值）</h2>
+            <p class="desc">由 <code>firstName</code> + <code>lastName</code> 算出 <code>fullName</code>。改输入框，全名自动更新。</p>
+            <div class="code"><span class="f">computed</span>: {
+    fullName() {
+        <span class="k">return</span> <span class="k">this</span>.firstName + <span class="s">' '</span> + <span class="k">this</span>.lastName;
+    },
+}</div>
+            <div class="label">渲染结果（模板里不带括号）：</div>
+            <div class="output">
+                姓：<input class="input-demo" v-model="firstName" />　名：<input class="input-demo" v-model="lastName" />
+                <div style="margin-top:8px;">全名 = <b class="hl">{{ fullName }}</b></div>
+            </div>
+            <div class="tip">💡 <code>fullName</code> 不是存出来的，是算出来的。firstName/lastName 一变，它自动重算。</div>
+        </div>
+
+        <div class="section">
+            <h2>五、watch —— 监听数据变化</h2>
+            <p class="desc">监听 <code>keyword</code>，一变就记录「旧值 → 新值」。</p>
+            <div class="code"><span class="f">watch</span>: {
+    keyword(newVal, oldVal) {
+        <span class="k">this</span>.watchLog = oldVal + <span class="s">' → '</span> + newVal;
+    },
+}</div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <input class="input-demo" v-model="keyword" placeholder="输入点东西，观察变化" />
+                <div style="margin-top:8px;">watch 记录的变化：<b class="hl">{{ watchLog || '（还没变过）' }}</b></div>
+            </div>
+            <div class="tip">💡 watch 适合「数据一变就做动作」（如重新发请求），算新值则用 computed。</div>
+        </div>
+
+        <div class="section">
+            <h2>六、生命周期 —— created / mounted</h2>
+            <p class="desc">组件创建后，Vue 会在特定时间点自动回调这些方法。打开 F12 Console 看执行顺序。</p>
+            <div class="code"><span class="f">created</span>() {
+    <span class="c">// data 已就绪，DOM 还没渲染 → 适合发请求加载数据</span>
+    <span class="k">this</span>.lifecycleLog = <span class="s">'created 执行了（data 就绪，DOM 未渲染）'</span>;
+},
+<span class="f">mounted</span>() {
+    <span class="c">// DOM 已渲染 → 可操作 DOM、初始化图表</span>
+    <span class="k">this</span>.lifecycleLog += <span class="s">'；mounted 执行了（DOM 已渲染）'</span>;
+}</div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                生命周期日志：<b class="hl">{{ lifecycleLog }}</b>
+            </div>
+            <div class="tip">💡 项目里最常见的是 <code>created() { this.loadData() }</code>——组件一创建就先加载数据。</div>
+        </div>
+
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                // 二、data
+                userName: '张三',
+                age: 30,
+                // 三、methods
+                count: 0,
+                // 四、computed
+                firstName: '张',
+                lastName: '三',
+                // 五、watch
+                keyword: '',
+                watchLog: '',
+                // 六、生命周期
+                lifecycleLog: '',
+            };
+        },
+        methods: {
+            increment() {
+                this.count++;
+            },
+        },
+        computed: {
+            fullName() {
+                return this.firstName + ' ' + this.lastName;
+            },
+        },
+        watch: {
+            keyword(newVal, oldVal) {
+                this.watchLog = oldVal + ' → ' + newVal;
+            },
+        },
+        created() {
+            this.lifecycleLog = 'created 执行了（data 就绪，DOM 未渲染）';
+            console.log('[生命周期] created：data 就绪，DOM 未渲染，适合发请求 loadData()');
+        },
+        mounted() {
+            this.lifecycleLog += '；mounted 执行了（DOM 已渲染）';
+            console.log('[生命周期] mounted：DOM 已渲染，可操作 DOM / 初始化图表');
+            console.log('[生命周期] 执行顺序：created → mounted（created 先，mounted 后）');
+        },
+    });
+</script>
+
+</body>
+</html>

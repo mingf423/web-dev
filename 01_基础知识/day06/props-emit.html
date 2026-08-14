@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>父子组件通信：props + $emit —— Day06</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+        .code .t { color: #e06c75; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .parent-box {
+            background: #eaf2fb;
+            border: 2px solid #1b65b9;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+        .parent-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1b65b9;
+            margin-bottom: 12px;
+        }
+
+        .child-box {
+            background: #fff;
+            border: 2px dashed #e6a23c;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+        .child-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e6a23c;
+            margin-bottom: 10px;
+        }
+
+        .input-demo {
+            padding: 8px 10px;
+            border: 1px solid #cecece;
+            border-radius: 2px;
+            font-size: 14px;
+            width: 220px;
+            color: #303133;
+        }
+        .input-demo:focus { border-color: #1b65b9; outline: none; }
+
+        .btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 2px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #1b65b9;
+            color: #fff;
+            margin-right: 6px;
+        }
+        .btn:hover { background: #4581c6; }
+        .btn.warn { background: #e6a23c; }
+        .btn.warn:hover { background: #ebb563; }
+
+        .msg {
+            margin-top: 10px;
+            font-size: 13px;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+            color: #1b65b9;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 20px;
+            color: #909399;
+            line-height: 1;
+            margin: 4px 0;
+        }
+
+        .tip {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>父子组件通信：props 下传 + $emit 上抛</h2>
+        <p class="desc">
+            父组件通过 <code>:title="parentTitle"</code> 把数据传给子组件（props 下传）；
+            子组件通过 <code>$emit('notify', ...)</code> 抛事件通知父组件（$emit 上抛）。
+        </p>
+        <div class="code"><span class="c">&lt;!-- 父组件模板 --&gt;</span>
+<span class="t">&lt;child-card</span> :title=<span class="s">"parentTitle"</span> @notify=<span class="s">"handleNotify"</span> <span class="t">/&gt;</span>
+<span class="c">                     │  props 下传        │  $emit 上抛</span>
+
+<span class="c">// 子组件：声明接收 title，用 $emit 抛事件</span>
+Vue.component(<span class="s">'child-card'</span>, {
+    props: [<span class="s">'title'</span>],
+    methods: {
+        notify() { <span class="k">this</span>.$emit(<span class="s">'notify'</span>, <span class="s">'你好，父组件！'</span>); },
+    },
+});
+
+<span class="c">// 父组件：监听 notify 事件</span>
+methods: {
+    handleNotify(msg) { <span class="k">this</span>.received = msg; <span class="k">this</span>.count++; },
+}</div>
+    </div>
+
+    <div class="section">
+        <div id="app">
+            <div class="parent-box">
+                <div class="parent-title">👑 父组件</div>
+                <div>
+                    修改父组件数据 <code>parentTitle</code>：
+                    <input class="input-demo" v-model="parentTitle" />
+                </div>
+                <div style="margin-top:10px;">
+                    收到的子组件消息：<b style="color:#e6a23c;">{{ received || '（还没收到）' }}</b>
+                    收到次数：<b style="color:#e6a23c;">{{ count }}</b>
+                </div>
+
+                <div class="arrow">▼ props 下传（parentTitle → 子组件的 title）</div>
+
+                <div class="child-box">
+                    <div class="child-title">🧒 子组件（child-card）</div>
+                    <child-card :title="parentTitle" @notify="handleNotify"></child-card>
+                </div>
+
+                <div class="arrow">▲ $emit 上抛（子组件 notify → 父组件 handleNotify）</div>
+            </div>
+
+            <div class="tip">
+                💡 操作试试：① 改上面的输入框，子组件里显示的 title 跟着变（父 → 子，props）。
+                ② 点子组件里的「通知父组件」按钮，父组件的「收到消息」和「次数」变化（子 → 父，$emit）。<br>
+                ⚠️ 单向数据流：子组件<b>不能直接改</b> props（title），想改只能 $emit 让父组件改。
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    // 注册一个子组件：接收 props.title，通过 $emit 抛事件
+    Vue.component('child-card', {
+        props: ['title'],
+        template: `
+            <div style="margin-top:8px;">
+                我收到的 title：<b style="color:#1b65b9;">{{ title }}</b>
+                <button class="btn warn" style="margin-left:10px;" @click="notify">通知父组件</button>
+            </div>
+        `,
+        methods: {
+            notify() {
+                this.$emit('notify', '你好，父组件！我是子组件发来的消息');
+            },
+        },
+    });
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                parentTitle: '父组件传来的标题',
+                received: '',
+                count: 0,
+            };
+        },
+        methods: {
+            handleNotify(msg) {
+                this.received = msg;
+                this.count++;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>

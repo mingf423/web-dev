@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>computed 缓存 vs methods 重复计算 —— Day06</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+        .code .t { color: #e06c75; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 16px;
+            font-size: 14px;
+            color: #303133;
+            line-height: 2.2;
+        }
+        .output b.hl { color: #1b65b9; }
+        .output b.bad { color: #f56c6c; }
+        .output b.good { color: #67c23a; }
+
+        .input-demo {
+            padding: 8px 10px;
+            border: 1px solid #cecece;
+            border-radius: 2px;
+            font-size: 14px;
+            width: 120px;
+            color: #303133;
+        }
+        .input-demo:focus { border-color: #1b65b9; outline: none; }
+
+        .btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 2px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #e6a23c;
+            color: #fff;
+            margin-right: 6px;
+        }
+        .btn:hover { background: #ebb563; }
+
+        .counter-box {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 10px 16px;
+            margin-right: 12px;
+            min-width: 160px;
+        }
+        .counter-box .num {
+            font-size: 26px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .tip {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>computed 缓存 vs methods 重复计算</h2>
+        <p class="desc">
+            页面里同时渲染了 <b>3 个</b> <code>{{ fullName }}</code>（computed）和 <b>3 个</b> <code>{{ getFullName() }}</code>（methods）。
+            点「触发重渲染」按钮（改一个和姓名无关的变量 tick），观察两个计数器的变化。
+        </p>
+        <div class="code"><span class="f">computed</span>: {
+    <span class="c">// 只有 firstName/lastName 变了才会重新算，否则返回缓存</span>
+    fullName() {
+        <span class="k">this</span>.computedCount++;
+        <span class="k">return</span> <span class="k">this</span>.firstName + <span class="s">' '</span> + <span class="k">this</span>.lastName;
+    },
+},
+<span class="f">methods</span>: {
+    <span class="c">// 每次被调用都重新执行一遍</span>
+    getFullName() {
+        <span class="k">this</span>.methodCount++;
+        <span class="k">return</span> <span class="k">this</span>.firstName + <span class="s">' '</span> + <span class="k">this</span>.lastName;
+    },
+}</div>
+    </div>
+
+    <div class="section">
+        <div id="app">
+            <div class="output">
+                <div>
+                    姓：<input class="input-demo" v-model="firstName" />　名：<input class="input-demo" v-model="lastName" />
+                </div>
+
+                <div style="margin-top:14px;font-size:13px;color:#909399;">
+                    模板里渲染了 3 个 computed 和 3 个 methods（都是"姓 + 名"）：
+                </div>
+
+                <div>
+                    <span class="counter-box">
+                        <span class="num good">{{ computedCount }}</span>
+                        computed 计算次数（有缓存）
+                    </span>
+                    <span class="counter-box">
+                        <span class="num bad">{{ methodCount }}</span>
+                        methods 计算次数（无缓存）
+                    </span>
+                </div>
+
+                <div style="margin-top:14px;">
+                    <button class="btn" @click="tick++">触发重渲染（tick = {{ tick }}）</button>
+                    <span style="font-size:12px;color:#909399;">点这个按钮，tick 变了，整个组件重新渲染</span>
+                </div>
+
+                <div style="margin-top:12px;font-size:13px;color:#909399;">
+                    页面实际渲染的内容：
+                    <div>computed × 3：{{ fullName }}　{{ fullName }}　{{ fullName }}</div>
+                    <div>methods × 3：{{ getFullName() }}　{{ getFullName() }}　{{ getFullName() }}</div>
+                </div>
+            </div>
+
+            <div class="tip">
+                💡 <b>点「触发重渲染」</b>：tick 变了 → 整个模板重新渲染 → 3 个 <code>getFullName()</code> 又各执行了一遍
+                （methodCount 一次 +3），而 3 个 <code>fullName</code> 因为依赖没变，直接读缓存（computedCount 不变）。<br>
+                <b>改姓或名</b>：依赖变了，computed 才会重新算（computedCount 才会 +1）。
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                firstName: '张',
+                lastName: '三',
+                tick: 0,           // 和姓名无关的变量，用来触发重渲染
+                computedCount: 0,  // 记录 computed 算了多少次
+                methodCount: 0,    // 记录 methods 执行了多少次
+            };
+        },
+        computed: {
+            fullName() {
+                this.computedCount++;   // 每次真正计算时 +1
+                return this.firstName + ' ' + this.lastName;
+            },
+        },
+        methods: {
+            getFullName() {
+                this.methodCount++;      // 每次被调用时 +1
+                return this.firstName + ' ' + this.lastName;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>
