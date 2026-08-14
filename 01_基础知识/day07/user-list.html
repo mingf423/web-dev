@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表页 —— 参考答案（第1周综合）Day07</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 16px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            max-width: 760px;
+        }
+
+        /* 搜索区 */
+        .search-box {
+            margin-bottom: 16px;
+        }
+        .search-box input {
+            padding: 8px 10px;
+            border: 1px solid #cecece;
+            border-radius: 2px;
+            font-size: 14px;
+            width: 220px;
+            color: #303133;
+        }
+        .search-box input:focus { border-color: #1b65b9; outline: none; }
+
+        .btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 2px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #1b65b9;
+            color: #fff;
+            margin-left: 8px;
+        }
+        .btn:hover { background: #4581c6; }
+        .btn.ghost {
+            background: #fff;
+            border: 1px solid #cecece;
+            color: #606266;
+        }
+        .btn.ghost:hover { border-color: #1b65b9; color: #1b65b9; }
+        .btn.danger { background: #f56c6c; }
+        .btn.danger:hover { background: #f78989; }
+
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #dcdfe6;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f0f2f5;
+            font-weight: 700;
+            color: #303133;
+        }
+        tr:hover td { background: #dee9f5; }
+
+        .empty {
+            text-align: center;
+            color: #909399;
+            padding: 24px;
+        }
+
+        .total {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #606266;
+        }
+        .total b { color: #1b65b9; }
+    </style>
+</head>
+<body>
+
+    <h2>用户列表页（参考答案）</h2>
+    <div class="container" id="app">
+
+        <!-- ① 查询表单 -->
+        <div class="search-box">
+            <input v-model="keyword" placeholder="输入姓名搜索" @keyup.enter="search" />
+            <button class="btn" @click="search">查询</button>
+            <button class="btn ghost" @click="reset">重置</button>
+        </div>
+
+        <!-- ② 表格：只渲染过滤后的 filteredUsers -->
+        <table>
+            <thead>
+                <tr><th>姓名</th><th>年龄</th><th>邮箱</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+                <tr v-for="u in filteredUsers" :key="u.id">
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.age }}</td>
+                    <td>{{ u.email }}</td>
+                    <td><button class="btn danger" @click="remove(u.id)">删除</button></td>
+                </tr>
+                <tr v-if="filteredUsers.length === 0">
+                    <td colspan="4" class="empty">没有匹配的用户</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ③ 总人数 -->
+        <div class="total">共 <b>{{ filteredUsers.length }}</b> 人</div>
+
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                keyword: '',        // 输入框绑定的（还没生效）
+                searchKeyword: '',  // 点「查询」后才生效的搜索词
+                users: [
+                    { id: 1, name: '张三', age: 28, email: 'zhangsan@example.com' },
+                    { id: 2, name: '李四', age: 32, email: 'lisi@example.com' },
+                    { id: 3, name: '王五', age: 25, email: 'wangwu@example.com' },
+                    { id: 4, name: '赵六', age: 35, email: 'zhaoliu@example.com' },
+                    { id: 5, name: '孙七', age: 41, email: 'sunqi@example.com' },
+                    { id: 6, name: '周八', age: 29, email: 'zhouba@example.com' },
+                ],
+            };
+        },
+        computed: {
+            // 过滤结果 = users 里 name 包含 searchKeyword 的那些
+            filteredUsers() {
+                return this.users.filter(u => u.name.includes(this.searchKeyword));
+            },
+        },
+        methods: {
+            search() {
+                this.searchKeyword = this.keyword.trim();   // 把输入框的值"提交"为搜索词
+            },
+            reset() {
+                this.keyword = '';
+                this.searchKeyword = '';
+            },
+            remove(id) {
+                if (confirm('确认删除该用户？')) {
+                    // 从 users 里删掉 id 匹配的那一个（Day03 的 filter）
+                    this.users = this.users.filter(u => u.id !== id);
+                }
+            },
+        },
+    });
+</script>
+
+</body>
+</html>
