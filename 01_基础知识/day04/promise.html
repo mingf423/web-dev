@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise 基础演示 —— Day04</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #303133;
+            line-height: 1.8;
+            min-height: 20px;
+        }
+        .output .result-line { white-space: pre-wrap; }
+        .output .result-line::before {
+            content: '➜ ';
+            color: #1b65b9;
+            font-weight: 700;
+        }
+        .output .err { color: #f56c6c; }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、执行顺序：同步先跑，异步后跑（最重要的心智模型）</h2>
+        <p class="desc">观察下方输出出现的<strong>顺序</strong>。注意「3. 定时器回调」是最后才出现的 —— 因为它是异步的。</p>
+        <div class="code"><span class="f">console.log</span>(<span class="s">'1. 开始'</span>);          <span class="c">// 同步，立刻执行</span>
+
+<span class="f">setTimeout</span>(() => {                 <span class="c">// 异步，1 秒后才执行</span>
+    <span class="f">console.log</span>(<span class="s">'3. 定时器回调（异步）'</span>);
+}, 1000);
+
+<span class="f">console.log</span>(<span class="s">'2. 结束'</span>);          <span class="c">// 同步，立刻执行</span></div>
+        <div class="label">输出（注意顺序，第 3 行是 1 秒后才出现的）：</div>
+        <div class="output" id="out-order"></div>
+        <div class="tip">💡 Java 里代码从上往下顺序执行；JS 里<strong>同步的先跑完，异步的「回头」再跑</strong>。这就是为什么 <code>fetch(url).then(...)</code> 里的回调不会立刻执行。</div>
+    </div>
+
+    <div class="section">
+        <h2>二、Promise 成功：resolve → then</h2>
+        <p class="desc">模拟「后端接口 1 秒后返回成功」。<code>resolve</code> 对应成功，<code>then</code> 处理结果。</p>
+        <div class="code"><span class="k">const</span> p = <span class="k">new</span> <span class="f">Promise</span>((resolve, reject) => {
+    <span class="c">// 模拟异步操作：1 秒后成功</span>
+    <span class="f">setTimeout</span>(() => <span class="f">resolve</span>(<span class="s">'数据加载成功'</span>), 1000);
+});
+
+p.<span class="f">then</span>(result => {
+    <span class="f">console.log</span>(<span class="s">'then 收到：'</span> + result);
+});</div>
+        <div class="label">输出（1 秒后出现）：</div>
+        <div class="output" id="out-resolve"></div>
+    </div>
+
+    <div class="section">
+        <h2>三、Promise 失败：reject → catch</h2>
+        <p class="desc"><code>reject</code> 对应失败，<code>catch</code> 处理错误。这就是项目里 <code>.catch(err => this.$message.error(...))</code> 的原理。</p>
+        <div class="code"><span class="k">const</span> p = <span class="k">new</span> <span class="f">Promise</span>((resolve, reject) => {
+    <span class="f">setTimeout</span>(() => <span class="f">reject</span>(<span class="k">new</span> <span class="f">Error</span>(<span class="s">'网络请求失败'</span>)), 1000);
+});
+
+p.<span class="f">then</span>(result => {
+    <span class="c">// 不会执行，因为失败了</span>
+}).<span class="f">catch</span>(err => {
+    <span class="f">console.log</span>(<span class="s">'catch 捕获：'</span> + err.message);
+});</div>
+        <div class="label">输出（1 秒后出现）：</div>
+        <div class="output" id="out-reject"></div>
+    </div>
+
+    <div class="section">
+        <h2>四、then 链式调用（项目三步曲）</h2>
+        <p class="desc">模拟项目里「拿数据 → 处理 → 渲染」三步。每个 <code>then</code> 的返回值传给下一个。</p>
+        <div class="code"><span class="c">// 模拟一个返回 Promise 的「接口函数」</span>
+<span class="k">function</span> <span class="f">mockFetch</span>() {
+    <span class="k">return</span> <span class="k">new</span> <span class="f">Promise</span>(resolve => {
+        <span class="f">setTimeout</span>(() => <span class="f">resolve</span>({ code: 0, data: { list: [1,2,3] } }), 800);
+    });
+}
+
+<span class="f">mockFetch</span>()                       <span class="c">// ① 发请求，拿到 Promise</span>
+    .<span class="f">then</span>(res => {                  <span class="c">// ② 校验 code</span>
+        <span class="k">if</span> (res.code === 0) <span class="k">return</span> res.data;
+        <span class="k">throw</span> <span class="k">new</span> <span class="f">Error</span>(<span class="s">'code 非 0'</span>);
+    })
+    .<span class="f">then</span>(data => {                 <span class="c">// ③ 拿到 data，渲染</span>
+        <span class="f">console.log</span>(<span class="s">'渲染列表：'</span> + data.list);
+    })
+    .<span class="f">catch</span>(err => {                <span class="c">// ④ 任何一步出错都到这</span>
+        <span class="f">console.log</span>(<span class="s">'出错了：'</span> + err.message);
+    });</div>
+        <div class="label">输出（800ms 后出现）：</div>
+        <div class="output" id="out-chain"></div>
+    </div>
+
+<script>
+    function print(id, value, isError) {
+        const box = document.getElementById(id);
+        const line = document.createElement('div');
+        line.className = 'result-line' + (isError ? ' err' : '');
+        if (value !== null && typeof value === 'object') {
+            line.textContent = JSON.stringify(value);
+        } else {
+            line.textContent = String(value);
+        }
+        box.appendChild(line);
+        console.log(id + ':', value);
+    }
+
+    // ===== 一、执行顺序 =====
+    print('out-order', '1. 开始（同步）');
+    setTimeout(() => {
+        print('out-order', '3. 定时器回调（异步，1 秒后）');
+    }, 1000);
+    print('out-order', '2. 结束（同步）');
+
+    // ===== 二、Promise 成功 =====
+    new Promise((resolve) => {
+        setTimeout(() => resolve('数据加载成功'), 1000);
+    }).then(result => {
+        print('out-resolve', 'then 收到 → ' + result);
+    });
+
+    // ===== 三、Promise 失败 =====
+    new Promise((resolve, reject) => {
+        setTimeout(() => reject(new Error('网络请求失败')), 1000);
+    }).catch(err => {
+        print('out-reject', 'catch 捕获 → ' + err.message, true);
+    });
+
+    // ===== 四、then 链式调用 =====
+    function mockFetch() {
+        return new Promise(resolve => {
+            setTimeout(() => resolve({ code: 0, data: { list: [1, 2, 3] } }), 800);
+        });
+    }
+
+    mockFetch()
+        .then(res => {
+            print('out-chain', '① 收到响应 res，code=' + res.code);
+            if (res.code === 0) return res.data;
+            throw new Error('code 非 0');
+        })
+        .then(data => {
+            print('out-chain', '② 拿到 data，渲染列表 → ' + JSON.stringify(data.list));
+        })
+        .catch(err => {
+            print('out-chain', '③ 出错了 → ' + err.message, true);
+        });
+</script>
+
+</body>
+</html>
