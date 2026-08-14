@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue 七大指令详解 —— Day05</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+        .code .t { color: #e06c75; }
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .output {
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #303133;
+            line-height: 2;
+            min-height: 20px;
+        }
+        .output .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            margin-right: 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            background: #dee9f5;
+            color: #1b65b9;
+        }
+        .output .done { color: #67c23a; text-decoration: line-through; }
+        .output .del {
+            color: #f56c6c;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 12px;
+        }
+
+        .input-demo {
+            padding: 8px 10px;
+            border: 1px solid #cecece;
+            border-radius: 2px;
+            font-size: 14px;
+            width: 220px;
+            color: #303133;
+        }
+        .input-demo:focus { border-color: #1b65b9; outline: none; }
+
+        .btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 2px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #1b65b9;
+            color: #fff;
+        }
+        .btn:hover { background: #4581c6; }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+
+        <div class="section">
+            <h2>一、{{ }} 插值 —— 显示变量</h2>
+            <p class="desc">把 data 里的变量显示出来，可以写表达式。</p>
+            <div class="code"><span class="c">&lt;!-- 变量、对象字段、表达式、三元 --&gt;</span>
+<span class="t">&lt;span&gt;</span>{{ userName }}<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span&gt;</span>{{ user.name }}<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span&gt;</span>{{ 1 + 1 }}<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span&gt;</span>{{ status === 1 ? '在职' : '离职' }}<span class="t">&lt;/span&gt;</span></div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                用户名：{{ userName }} ｜ 姓名：{{ user.name }} ｜ 1+1 = {{ 1 + 1 }} ｜ 状态：{{ status === 1 ? '在职' : '离职' }}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>二、v-if / v-show —— 条件渲染</h2>
+            <p class="desc">点下方按钮切换 <code>showFlag</code>，观察 v-if 和 v-show 的区别。</p>
+            <div class="code"><span class="t">&lt;div</span> v-if=<span class="s">"showFlag"</span><span class="t">&gt;</span>我用 v-if，为 false 时 DOM 里【没有我】<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div</span> v-show=<span class="s">"showFlag"</span><span class="t">&gt;</span>我用 v-show，为 false 时我只是【隐藏了】<span class="t">&lt;/div&gt;</span></div>
+            <div class="label">渲染结果（开关 showFlag = {{ showFlag }}）：</div>
+            <div class="output">
+                <div v-if="showFlag">✅ v-if 显示：DOM 里有这个节点</div>
+                <div v-show="showFlag">✅ v-show 显示：DOM 里有这个节点</div>
+                <div style="color:#909399;font-size:12px;">（两个都消失时，打开 F12 → Elements 查看：v-if 的节点被移除了，v-show 的节点还在但 style="display:none"）</div>
+            </div>
+            <div style="margin-top:10px;">
+                <button class="btn" @click="showFlag = !showFlag">切换 showFlag（当前 {{ showFlag }}）</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>三、v-for —— 循环渲染</h2>
+            <p class="desc">遍历 <code>userList</code> 数组，每个用户渲染一行。记得加 <code>:key</code>。</p>
+            <div class="code"><span class="t">&lt;div</span> v-for=<span class="s">"u in userList"</span> :key=<span class="s">"u.id"</span><span class="t">&gt;</span>{{ u.id }} - {{ u.name }}（{{ u.age }}岁）<span class="t">&lt;/div&gt;</span></div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <div v-for="u in userList" :key="u.id">
+                    {{ u.id }} - {{ u.name }}（{{ u.age }}岁）
+                </div>
+            </div>
+            <div class="tip">💡 对应 Java：<code>for (User u : userList) { ... }</code>。<code>:key="u.id"</code> 是唯一标识，用主键不用下标。</div>
+        </div>
+
+        <div class="section">
+            <h2>四、v-model —— 双向绑定</h2>
+            <p class="desc">在输入框敲字，下面实时显示 <code>inputValue</code> 的值 —— 输入框和数据自动同步。</p>
+            <div class="code"><span class="t">&lt;input</span> v-model=<span class="s">"inputValue"</span> <span class="t">/&gt;</span>
+<span class="t">&lt;p&gt;</span>你输入的是：{{ inputValue }}<span class="t">&lt;/p&gt;</span></div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <input class="input-demo" v-model="inputValue" placeholder="输入点东西试试" />
+                <p style="margin-top:8px;">你输入的是：<b style="color:#1b65b9;">{{ inputValue || '（还没输入）' }}</b></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>五、:prop（v-bind）—— 动态绑定属性</h2>
+            <p class="desc">加冒号 = 传变量；不加 = 传字符串。观察按钮文字和禁用状态是动态的。</p>
+            <div class="code"><span class="c">&lt;!-- :title 传变量 buttonTitle；:disabled 传变量 isDisabled --&gt;</span>
+<span class="t">&lt;button</span> :title=<span class="s">"buttonTitle"</span> :disabled=<span class="s">"isDisabled"</span><span class="t">&gt;</span>鼠标悬停看我<span class="t">&lt;/button&gt;</span></div>
+            <div class="label">渲染结果（按钮 title 是动态的，鼠标悬停可看到）：</div>
+            <div class="output">
+                <button class="btn" :title="buttonTitle" :disabled="isDisabled">悬停查看 title</button>
+                <span style="font-size:12px;color:#909399;margin-left:10px;">buttonTitle = "{{ buttonTitle }}"，isDisabled = {{ isDisabled }}</span>
+            </div>
+            <div class="tip">💡 不加冒号 <code>title="buttonTitle"</code> 会是字符串 "buttonTitle"；加冒号 <code>:title="buttonTitle"</code> 才是变量值。</div>
+        </div>
+
+        <div class="section">
+            <h2>六、@event（v-on）—— 绑定事件</h2>
+            <p class="desc">点按钮触发方法，方法里改数据，页面自动更新。下面 <code>clickCount</code> 每次点击 +1。</p>
+            <div class="code"><span class="t">&lt;button</span> @click=<span class="s">"handleClick"</span><span class="t">&gt;</span>点我<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;p&gt;</span>点击次数：{{ clickCount }}<span class="t">&lt;/p&gt;</span></div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <button class="btn" @click="handleClick">点我 +1</button>
+                <span style="margin-left:10px;">点击次数：<b style="color:#1b65b9;">{{ clickCount }}</b></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>七、v-html —— 渲染 HTML（了解）</h2>
+            <p class="desc"><code>{{ }}</code> 会把内容当纯文本，<code>v-html</code> 渲染真 HTML。⚠️ 有 XSS 风险。</p>
+            <div class="code"><span class="c">&lt;!-- {{ }} 转义成纯文本；v-html 渲染成红色 --&gt;</span>
+<span class="t">&lt;div&gt;</span>{{ htmlContent }}<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div</span> v-html=<span class="s">"htmlContent"</span><span class="t">&gt;&lt;/div&gt;</span></div>
+            <div class="label">渲染结果：</div>
+            <div class="output">
+                <div>用 {{ }} 显示：{{ htmlContent }}</div>
+                <div>用 v-html 显示：<span v-html="htmlContent"></span></div>
+            </div>
+        </div>
+
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                // 一、插值
+                userName: '张三',
+                user: { name: '李四' },
+                status: 1,
+                // 二、条件
+                showFlag: true,
+                // 三、循环
+                userList: [
+                    { id: 1, name: '张三', age: 30 },
+                    { id: 2, name: '李四', age: 24 },
+                    { id: 3, name: '王五', age: 35 },
+                ],
+                // 四、双向绑定
+                inputValue: '',
+                // 五、动态属性
+                buttonTitle: '我是动态 title，来自 data 变量',
+                isDisabled: false,
+                // 六、事件
+                clickCount: 0,
+                // 七、html
+                htmlContent: '<span style="color:#f56c6c;font-weight:700;">红色加粗文字</span>',
+            };
+        },
+        methods: {
+            handleClick() {
+                this.clickCount++;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>计数器 —— 理解 Vue 响应式（Day05）</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: #f1f2f6;
+            padding: 40px;
+            color: #303133;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-left: 4px solid #1b65b9;
+            padding-left: 10px;
+        }
+
+        p.desc {
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 14px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .code {
+            background: #282c34;
+            color: #abb2bf;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .code .c { color: #7f848e; }
+        .code .k { color: #c678dd; }
+        .code .s { color: #98c379; }
+        .code .f { color: #61afef; }
+        .code .t { color: #e06c75; }   /* 标签 */
+
+        .label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        /* Vue 计数器区域 */
+        .counter-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #f5f7fa;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .counter-num {
+            font-size: 40px;
+            font-weight: 700;
+            color: #1b65b9;
+            min-width: 80px;
+            text-align: center;
+        }
+        .btn {
+            padding: 8px 17px;
+            border: none;
+            border-radius: 2px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #1b65b9;
+            color: #fff;
+        }
+        .btn:hover { background: #4581c6; }
+        .btn.ghost {
+            background: #fff;
+            border: 1px solid #1b65b9;
+            color: #1b65b9;
+        }
+        .btn.ghost:hover { background: #e1ebf6; }
+
+        .tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #909399;
+            background: #dee9f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>一、Day01 的写法：手动操作 DOM（命令式）</h2>
+        <p class="desc">这是你前四天学的思路：数据一变，要手动找到元素、手动改。</p>
+        <div class="code"><span class="t">&lt;button</span> <span class="f">onclick</span>=<span class="s">"add()"</span><span class="t">&gt;</span>+1<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;div</span> <span class="f">id</span>=<span class="s">"count"</span><span class="t">&gt;</span>0<span class="t">&lt;/div&gt;</span>
+
+<span class="t">&lt;script&gt;</span>
+<span class="k">let</span> count = 0;
+<span class="k">function</span> <span class="f">add</span>() {
+    count++;
+    <span class="c">// ❌ 手动找到元素，手动改文字 —— 累、易漏</span>
+    document.<span class="f">getElementById</span>(<span class="s">'count'</span>).textContent = count;
+}
+<span class="t">&lt;/script&gt;</span></div>
+    </div>
+
+    <div class="section">
+        <h2>二、Vue 的写法：声明式 + 响应式</h2>
+        <p class="desc">你只声明"显示 count"，点按钮改 count，<strong>页面自动更新</strong>。全程没有 getElementById。</p>
+        <div class="code"><span class="t">&lt;div&gt;</span>{{ count }}<span class="t">&lt;/div&gt;</span>          <span class="c">&lt;!-- 声明：显示 count --&gt;</span>
+<span class="t">&lt;button</span> @click=<span class="s">"count++"</span><span class="t">&gt;</span>+1<span class="t">&lt;/button&gt;</span>   <span class="c">&lt;!-- 点击：count 自增 --&gt;</span>
+<span class="t">&lt;button</span> @click=<span class="s">"count--"</span><span class="t">&gt;</span>-1<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button</span> @click=<span class="s">"reset"</span><span class="t">&gt;</span>重置<span class="t">&lt;/button&gt;</span>
+
+<span class="t">&lt;script&gt;</span>
+<span class="k">new</span> <span class="f">Vue</span>({
+    el: <span class="s">'#app'</span>,
+    data() { <span class="k">return</span> { count: 0 }; },   <span class="c">// 数据在这</span>
+    methods: {
+        reset() { <span class="k">this</span>.count = 0; },      <span class="c">// 方法在这</span>
+    },
+});
+<span class="t">&lt;/script&gt;</span></div>
+    </div>
+
+    <div class="section">
+        <h2>三、实际运行：点按钮，看 {{ count }} 自动变</h2>
+        <p class="desc">下面这个计数器就是 Vue 渲染的。点 +1/-1，数字立刻变 —— 这就是"响应式"。</p>
+
+        <div id="app">
+            <div class="counter-box">
+                <span class="counter-num">{{ count }}</span>
+                <button class="btn" @click="count++">+1</button>
+                <button class="btn" @click="count--">-1</button>
+                <button class="btn ghost" @click="reset">重置</button>
+            </div>
+        </div>
+
+        <div class="tip">
+            💡 验证响应式：打开 F12 → Elements，找到 <code>&lt;span class="counter-num"&gt;</code>，
+            点 +1，观察它的文字自动从 0 变成 1。你<strong>没有写任何一行更新 DOM 的代码</strong>，Vue 帮你做了。
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return { count: 0 };
+        },
+        methods: {
+            reset() {
+                this.count = 0;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>
